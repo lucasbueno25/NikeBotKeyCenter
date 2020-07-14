@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using webapi.Domain.Models;
 using webapi.Domain.Repositories.LibraryBook;
@@ -36,6 +38,8 @@ namespace webapi.Infra.Data.Repositories.LibraryBook
             {
                 using (var dbContextTransaction = _context.Database.BeginTransaction())
                 {
+                    db.Database.ExecuteSqlCommand($"SELECT IdKey FROM RegisteredKeys WITH (TABLOCKX, HOLDLOCK) WHERE KeyValue = {keyValue}");
+
                     var foundKey = db.RegisteredKeys.SingleOrDefault(b => b.KeyValue == keyValue && b.KeyUsedTimestamp == null && b.KeyClosedTimestamp == null);
 
                     if (foundKey != null)
